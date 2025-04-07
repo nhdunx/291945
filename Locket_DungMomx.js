@@ -1,6 +1,5 @@
-
 const mapping = {
-  'Locket': ['Gold'],
+  'Locket': ['Gold'], // Chắc chắn rằng đây là 'Gold' trong mapping
   'iPad': ['Gold']
 };
 
@@ -25,7 +24,7 @@ var dunx = {
 var titkok = {
   grace_period_expires_date: null,
   purchase_date: "1945-09-02T14:00:00Z",
-  product_identifier: "Gold",
+  product_identifier: "Gold", // Đảm bảo rằng sản phẩm là "Gold"
   expires_date: "2222-12-21T01:23:45Z"
 };
 
@@ -42,7 +41,7 @@ if (match) {
   obj.subscriber.entitlements[e] = titkok;
 
   obj.subscriber.features = [
-    "gold_badge",
+    "gold_badge", // Đây là huy hiệu "Locket Gold"
     "premium_ui",
     "priority_access",
     "video_record_10s"
