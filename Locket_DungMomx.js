@@ -1,6 +1,3 @@
-// ==UserScript==
-// @name        Locket Unlock Gold & 10s Video
-// ==/UserScript==
 
 const mapping = {
   'Locket': ['Gold'],
