@@ -3,12 +3,10 @@ const mapping = {
   'Locket': ['Gold']
 };
 
-
-// Locket_DungMomx.js
-var obj = JSON.parse($response.body);
 var ua = $request.headers["User-Agent"] || $request.headers["user-agent"];
+var obj = JSON.parse($response.body);
+obj.Attention = "UP TO NỖI HÀ DỤNG";
 
-// Cập nhật giá trị quyền
 var dunx = {
   is_sandbox: false,
   ownership_type: "PURCHASED",
@@ -29,8 +27,9 @@ var titkok = {
   expires_date: "2222-12-21T01:23:45Z"
 };
 
-// Xác định vị trí huy hiệu
+// Kiểm tra User-Agent
 const match = Object.keys(mapping).find(e => ua.includes(e));
+
 if (match) {
   let [e, s] = mapping[match];
   if (s) {
@@ -40,18 +39,17 @@ if (match) {
     obj.subscriber.subscriptions["com.dunx.premium.yearly"] = dunx;
   }
 
-  // Cấp quyền Gold cho Locket
+  // Cấp quyền Gold cho Locket nếu User-Agent chứa 'Locket'
   if (e === 'Gold' && !obj.subscriber.entitlements['Gold']) {
     obj.subscriber.entitlements['Gold'] = titkok;
   }
 
-  // Bật tính năng "Huy Hiệu Locket Gold" bằng cách thêm flag hoặc tham số nếu cần
+  // Bật tính năng "Huy Hiệu Locket Gold" bằng cách thêm cờ hoặc tham số
   if (e === 'Gold') {
     obj.subscriber.entitlements['Gold'].feature_enabled = true;  // Thêm flag hoặc cờ bật tính năng
     obj.subscriber.entitlements['Gold'].badge = "Locket Gold";  // Cập nhật thông tin thêm cho huy hiệu
   }
-  
-  // Đảm bảo cờ quyền được cấp đúng
+
   obj.subscriber.entitlements[e] = titkok;
 } else {
   obj.subscriber.subscriptions["com.dunx.premium.yearly"] = dunx;
