@@ -7,7 +7,7 @@ var ua = $request.headers["User-Agent"] || $request.headers["user-agent"];
 var obj = JSON.parse($response.body);
 obj.Attention = "UP TO NỖI HÀ DỤNG";
 
-// Thông tin thanh toán ảo
+// Thông tin thanh toán giả
 var dunx = {
   is_sandbox: false,
   ownership_type: "PURCHASED",
@@ -16,8 +16,8 @@ var dunx = {
   expires_date: "2222-12-21T01:23:45Z",
   grace_period_expires_date: null,
   unsubscribe_detected_at: null,
-  original_purchase_date: "1945-09-02T01:23:45Z",  // Ngày Quốc Khánh 2/9/1945
-  purchase_date: "1945-09-02T01:23:45Z",  // Ngày Quốc Khánh 2/9/1945
+  original_purchase_date: "1945-09-02T01:23:45Z",
+  purchase_date: "1945-09-02T01:23:45Z",
   store: "app_store"
 };
 
@@ -27,6 +27,16 @@ var titkok = {
   product_identifier: "com.dunx.premium.yearly",
   expires_date: "2222-12-21T01:23:45Z"
 };
+
+// Thêm thông tin giả lập IP từ Mỹ
+obj.subscriber.country = "US";
+obj.subscriber.location = {
+  country_code: "US",
+  region: "CA",
+  city: "Los Angeles"
+};
+obj.subscriber.ip_address = "104.26.10.78"; // IP của Cloudflare US
+obj.subscriber.locale = "en-US";
 
 const match = Object.keys(mapping).find(e => ua.includes(e));
 
@@ -39,25 +49,18 @@ if (match) {
     obj.subscriber.subscriptions["com.dunx.premium.yearly"] = dunx;
   }
 
-  // Cấp quyền Gold cho Locket nếu chưa cấp
-  if (e === 'Gold' && !obj.subscriber.entitlements['Gold']) {
-    obj.subscriber.entitlements['Gold'] = titkok;
-  }
-
-  // Đảm bảo tính năng Locket Gold luôn bật
+  // Đảm bảo quyền Gold luôn bật
   if (e === 'Gold') {
-    obj.subscriber.entitlements['Gold'].feature_enabled = true;
-    obj.subscriber.entitlements['Gold'].badge = "Locket Gold";
-    obj.subscriber.entitlements['Gold'].is_active = true;
-    obj.subscriber.entitlements['Gold'].valid = true;
-
-    // Lưu lại quyền để tránh bị mất
-    if (!obj.subscriber.entitlements['Gold'].hasOwnProperty('persistent')) {
-      obj.subscriber.entitlements['Gold'].persistent = true;  // Cờ để lưu quyền bền vững
-    }
+    obj.subscriber.entitlements['Gold'] = {
+      ...titkok,
+      feature_enabled: true,
+      badge: "Locket Gold",
+      is_active: true,
+      valid: true,
+      persistent: true
+    };
   }
 
-  // Xác nhận quyền truy cập cho Locket Gold
   obj.subscriber.entitlements[e] = titkok;
 
 } else {
@@ -65,5 +68,4 @@ if (match) {
   obj.subscriber.entitlements.pro = titkok;
 }
 
-// Trả về phản hồi đã chỉnh sửa
 $done({ body: JSON.stringify(obj) });
