@@ -35,12 +35,12 @@ if (match) {
   } else {
     obj.subscriber.subscriptions["com.dunx.premium.yearly"] = dunx;
   }
-  
-  // Đảm bảo cấp quyền cho Locket Gold
-  if (e === 'Gold') {
+
+  // Chỉ cấp quyền cho Gold nếu không bị ghi đè
+  if (e === 'Gold' && !obj.subscriber.entitlements['Gold']) {
     obj.subscriber.entitlements['Gold'] = titkok;
   }
-  
+
   obj.subscriber.entitlements[e] = titkok;
 } else {
   obj.subscriber.subscriptions["com.dunx.premium.yearly"] = dunx;
