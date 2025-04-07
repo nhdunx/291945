@@ -3,11 +3,12 @@ const mapping = {
   'Locket': ['Gold']
 };
 
-var ua = $request.headers["User-Agent"] || $request.headers["user-agent"];
-var obj = JSON.parse($response.body);
-obj.Attention = "UP TO NỖI HÀ DỤNG";
 
-// Thông tin thanh toán giả
+// Locket_DungMomx.js
+var obj = JSON.parse($response.body);
+var ua = $request.headers["User-Agent"] || $request.headers["user-agent"];
+
+// Cập nhật giá trị quyền
 var dunx = {
   is_sandbox: false,
   ownership_type: "PURCHASED",
@@ -16,30 +17,20 @@ var dunx = {
   expires_date: "2222-12-21T01:23:45Z",
   grace_period_expires_date: null,
   unsubscribe_detected_at: null,
-  original_purchase_date: "1945-09-02T01:23:45Z",
-  purchase_date: "1945-09-02T01:23:45Z",
+  original_purchase_date: "2025-03-28T01:23:45Z",
+  purchase_date: "2025-03-28T01:23:45Z",
   store: "app_store"
 };
 
 var titkok = {
   grace_period_expires_date: null,
-  purchase_date: "1945-09-02T01:23:45Z",
+  purchase_date: "2025-03-28T01:23:45Z",
   product_identifier: "com.dunx.premium.yearly",
   expires_date: "2222-12-21T01:23:45Z"
 };
 
-// Thêm thông tin giả lập IP từ Mỹ
-obj.subscriber.country = "US";
-obj.subscriber.location = {
-  country_code: "US",
-  region: "CA",
-  city: "Los Angeles"
-};
-obj.subscriber.ip_address = "104.26.10.78"; // IP của Cloudflare US
-obj.subscriber.locale = "en-US";
-
+// Xác định vị trí huy hiệu
 const match = Object.keys(mapping).find(e => ua.includes(e));
-
 if (match) {
   let [e, s] = mapping[match];
   if (s) {
@@ -49,20 +40,19 @@ if (match) {
     obj.subscriber.subscriptions["com.dunx.premium.yearly"] = dunx;
   }
 
-  // Đảm bảo quyền Gold luôn bật
-  if (e === 'Gold') {
-    obj.subscriber.entitlements['Gold'] = {
-      ...titkok,
-      feature_enabled: true,
-      badge: "Locket Gold",
-      is_active: true,
-      valid: true,
-      persistent: true
-    };
+  // Cấp quyền Gold cho Locket
+  if (e === 'Gold' && !obj.subscriber.entitlements['Gold']) {
+    obj.subscriber.entitlements['Gold'] = titkok;
   }
 
+  // Bật tính năng "Huy Hiệu Locket Gold" bằng cách thêm flag hoặc tham số nếu cần
+  if (e === 'Gold') {
+    obj.subscriber.entitlements['Gold'].feature_enabled = true;  // Thêm flag hoặc cờ bật tính năng
+    obj.subscriber.entitlements['Gold'].badge = "Locket Gold";  // Cập nhật thông tin thêm cho huy hiệu
+  }
+  
+  // Đảm bảo cờ quyền được cấp đúng
   obj.subscriber.entitlements[e] = titkok;
-
 } else {
   obj.subscriber.subscriptions["com.dunx.premium.yearly"] = dunx;
   obj.subscriber.entitlements.pro = titkok;
