@@ -16,14 +16,14 @@ var dunx = {
   expires_date: "2222-12-21T01:23:45Z",  // Đặt ngày hết hạn dài
   grace_period_expires_date: null,  // Không có thời gian gia hạn
   unsubscribe_detected_at: null,  // Không phát hiện hủy bỏ
-  original_purchase_date: "2025-03-28T01:23:45Z",  // Ngày mua ban đầu
-  purchase_date: "2025-03-28T01:23:45Z",  // Ngày mua
+  original_purchase_date: "1945-09-02T01:23:45Z",  // Ngày mua ban đầu là ngày Quốc Khánh 2/9/1945
+  purchase_date: "1945-09-02T01:23:45Z",  // Ngày mua là ngày Quốc Khánh 2/9/1945
   store: "app_store"  // Địa chỉ cửa hàng (Apple App Store)
 };
 
 var titkok = {
   grace_period_expires_date: null,  // Không có thời gian gia hạn
-  purchase_date: "2025-03-28T01:23:45Z",  // Ngày mua
+  purchase_date: "1945-09-02T01:23:45Z",  // Ngày mua là ngày Quốc Khánh 2/9/1945
   product_identifier: "com.dunx.premium.yearly",  // Định danh sản phẩm cho thuê bao hàng năm
   expires_date: "2222-12-21T01:23:45Z"  // Ngày hết hạn dài
 };
@@ -39,12 +39,12 @@ if (match) {
     obj.subscriber.subscriptions["com.dunx.premium.yearly"] = dunx;
   }
 
-  // Cấp quyền Gold cho Locket
+  // Cấp quyền Gold cho Locket nếu chưa cấp
   if (e === 'Gold' && !obj.subscriber.entitlements['Gold']) {
     obj.subscriber.entitlements['Gold'] = titkok;
   }
 
-  // Bật tính năng "Huy Hiệu Locket Gold" bằng cách thêm cờ flag hoặc tham số nếu cần
+  // Bật tính năng "Huy Hiệu Locket Gold" và đảm bảo tính năng luôn bật
   if (e === 'Gold') {
     obj.subscriber.entitlements['Gold'].feature_enabled = true;  // Thêm flag hoặc cờ bật tính năng
     obj.subscriber.entitlements['Gold'].badge = "Locket Gold";  // Cập nhật thông tin thêm cho huy hiệu
@@ -52,7 +52,9 @@ if (match) {
     obj.subscriber.entitlements['Gold'].valid = true;  // Đảm bảo quyền là hợp lệ
   }
 
+  // Xác nhận tính hợp lệ của quyền truy cập
   obj.subscriber.entitlements[e] = titkok;
+
 } else {
   obj.subscriber.subscriptions["com.dunx.premium.yearly"] = dunx;
   obj.subscriber.entitlements.pro = titkok;
