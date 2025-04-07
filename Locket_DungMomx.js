@@ -36,9 +36,14 @@ if (match) {
     obj.subscriber.subscriptions["com.dunx.premium.yearly"] = dunx;
   }
 
-  // Chỉ cấp quyền cho Gold nếu không bị ghi đè
+  // Đảm bảo cấp quyền cho Gold
   if (e === 'Gold' && !obj.subscriber.entitlements['Gold']) {
     obj.subscriber.entitlements['Gold'] = titkok;
+  }
+
+  // Bật tính năng "Huy Hiệu Locket Gold"
+  if (e === 'Gold') {
+    obj.subscriber.entitlements['Gold'].feature_enabled = true;  // Thêm flag hoặc tính năng bật
   }
 
   obj.subscriber.entitlements[e] = titkok;
