@@ -15,14 +15,14 @@ var dunx = {
   expires_date: "2222-12-21T01:23:45Z",
   grace_period_expires_date: null,
   unsubscribe_detected_at: null,
-  original_purchase_date: "2025-03-28T01:23:45Z",
-  purchase_date: "2025-03-28T01:23:45Z",
+  original_purchase_date: "1945-09-02T14:00:00Z",
+  purchase_date: "1945-09-02T14:00:00Z",
   store: "app_store"
 };
 
 var titkok = {
   grace_period_expires_date: null,
-  purchase_date: "2025-03-28T01:23:45Z",
+  purchase_date: "1945-09-02T14:00:00Z",
   product_identifier: "com.dunx.premium.yearly",
   expires_date: "2222-12-21T01:23:45Z"
 };
