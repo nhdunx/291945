@@ -1,11 +1,31 @@
-#!url=noturl
 #!name=Locket-NoiHaDung_Gold
-#!desc=Crack By DungMomx
+#!desc=Unlock Locket Gold + 10s Video + Fake Location (by DungMomx)
+#!author=DungMomx
+#!version=2025.04.08
 
-[Script]
-revenuecat = type=http-response, pattern=^https:\/\/api\.revenuecat\.com\/.+\/(receipts$|subscribers\/[^/]+$), script-path=https://raw.githubusercontent.com/nhdunx/291945/refs/heads/main/Locket_DungMomx.js, requires-body=true, max-size=-1, timeout=60
-
-deleteHeader = type=http-request, pattern=^https:\/\/api\.revenuecat\.com\/.+\/(receipts|subscribers), script-path=https://raw.githubusercontent.com/nhdunx/291945/refs/heads/main/deleteHeader.js, timeout=60
+[General]
+skip-proxy = 192.168.0.0/16,10.0.0.0/8
+dns-server = system
+always-real-ip = api.revenuecat.com
 
 [MITM]
 hostname = %APPEND% api.revenuecat.com
+
+[Proxy]
+USA-Proxy = http,64.225.8.82,10004
+
+[Script]
+# Xoá các header thật tránh bị RevenueCat phát hiện
+deleteHeader = type=http-request, pattern=^https:\/\/api\.revenuecat\.com\/.+\/(receipts|subscribers), script-path=https://raw.githubusercontent.com/nhdunx/291945/main/deleteHeader.js, timeout=60
+
+# Unlock tính năng Locket Gold
+revenuecat = type=http-response, pattern=^https:\/\/api\.revenuecat\.com\/.+\/(receipts$|subscribers\/[^/]+$), requires-body=true, max-size=-1, timeout=60, script-path=https://raw.githubusercontent.com/nhdunx/291945/main/Locket_DungMomx.js
+
+# Fake Location - Thêm vị trí giả vào header để bypass check location
+fakeLocation = type=http-request, pattern=^https:\/\/api\.revenuecat\.com\/.+\/subscribers, requires-body=true, timeout=60, script-path=https://raw.githubusercontent.com/nhdunx/291945/main/fakeLocation.js
+
+[Rule]
+DOMAIN,api.revenuecat.com,USA-Proxy
+DOMAIN-SUFFIX,locket.com,USA-Proxy
+PROCESS-NAME,Locket,USA-Proxy
+FINAL,DIRECT
