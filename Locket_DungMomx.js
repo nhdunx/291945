@@ -9,23 +9,23 @@ obj.Attention = "UP TO NỖI HÀ DỤNG";
 
 // Thông tin thanh toán ảo
 var dunx = {
-  is_sandbox: false,  // Đặt là false để mô phỏng giao dịch thật
-  ownership_type: "PURCHASED",  // Giao dịch đã được mua
-  billing_issues_detected_at: null,  // Không có vấn đề thanh toán
-  period_type: "normal",  // Thời gian thuê bao bình thường
-  expires_date: "2222-12-21T01:23:45Z",  // Đặt ngày hết hạn dài
-  grace_period_expires_date: null,  // Không có thời gian gia hạn
-  unsubscribe_detected_at: null,  // Không phát hiện hủy bỏ
-  original_purchase_date: "1945-09-02T01:23:45Z",  // Ngày mua ban đầu là ngày Quốc Khánh 2/9/1945
-  purchase_date: "1945-09-02T01:23:45Z",  // Ngày mua là ngày Quốc Khánh 2/9/1945
-  store: "app_store"  // Địa chỉ cửa hàng (Apple App Store)
+  is_sandbox: false,
+  ownership_type: "PURCHASED",
+  billing_issues_detected_at: null,
+  period_type: "normal",
+  expires_date: "2222-12-21T01:23:45Z",
+  grace_period_expires_date: null,
+  unsubscribe_detected_at: null,
+  original_purchase_date: "1945-09-02T01:23:45Z",  // Ngày Quốc Khánh 2/9/1945
+  purchase_date: "1945-09-02T01:23:45Z",  // Ngày Quốc Khánh 2/9/1945
+  store: "app_store"
 };
 
 var titkok = {
-  grace_period_expires_date: null,  // Không có thời gian gia hạn
-  purchase_date: "1945-09-02T01:23:45Z",  // Ngày mua là ngày Quốc Khánh 2/9/1945
-  product_identifier: "com.dunx.premium.yearly",  // Định danh sản phẩm cho thuê bao hàng năm
-  expires_date: "2222-12-21T01:23:45Z"  // Ngày hết hạn dài
+  grace_period_expires_date: null,
+  purchase_date: "1945-09-02T01:23:45Z",
+  product_identifier: "com.dunx.premium.yearly",
+  expires_date: "2222-12-21T01:23:45Z"
 };
 
 const match = Object.keys(mapping).find(e => ua.includes(e));
@@ -44,15 +44,20 @@ if (match) {
     obj.subscriber.entitlements['Gold'] = titkok;
   }
 
-  // Bật tính năng "Huy Hiệu Locket Gold" và đảm bảo tính năng luôn bật
+  // Đảm bảo tính năng Locket Gold luôn bật
   if (e === 'Gold') {
-    obj.subscriber.entitlements['Gold'].feature_enabled = true;  // Thêm flag hoặc cờ bật tính năng
-    obj.subscriber.entitlements['Gold'].badge = "Locket Gold";  // Cập nhật thông tin thêm cho huy hiệu
-    obj.subscriber.entitlements['Gold'].is_active = true;  // Đảm bảo tính năng hoạt động
-    obj.subscriber.entitlements['Gold'].valid = true;  // Đảm bảo quyền là hợp lệ
+    obj.subscriber.entitlements['Gold'].feature_enabled = true;
+    obj.subscriber.entitlements['Gold'].badge = "Locket Gold";
+    obj.subscriber.entitlements['Gold'].is_active = true;
+    obj.subscriber.entitlements['Gold'].valid = true;
+
+    // Lưu lại quyền để tránh bị mất
+    if (!obj.subscriber.entitlements['Gold'].hasOwnProperty('persistent')) {
+      obj.subscriber.entitlements['Gold'].persistent = true;  // Cờ để lưu quyền bền vững
+    }
   }
 
-  // Xác nhận tính hợp lệ của quyền truy cập
+  // Xác nhận quyền truy cập cho Locket Gold
   obj.subscriber.entitlements[e] = titkok;
 
 } else {
